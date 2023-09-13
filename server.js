@@ -19,6 +19,8 @@ try {
     console.log('database connection error')
 }
 
+
+//create product
 app.post('/api/product',async(req,res)=>{
     try {
         console.log(req.body);
@@ -34,20 +36,73 @@ app.post('/api/product',async(req,res)=>{
     }
 })
 
-app.put ('api/product/:id',async(req,res)=>{
+
+//update product
+app.put ('/api/product/:id',async(req,res)=>{
     try {
         console.log(req.body);
-        const productId = req.params
-        const {name,description,brand,offers,price} = req.body
-        const response = await product.updateOne({name,description,brand,offers,price})
+        const productId = req.params.id
+        const updatedData = req.body
+        const response = await product.findByIdAndUpdate(productId,updatedData)
         res.json({
             status: 'success',
-            message: 'Product created successfully'
+            message: 'Product updated successfully'
         })
         
     } catch (error) {
         console.log(error);
     }
+})
+
+
+//delete product by id
+app.delete ('/api/product/:id',async(req,res)=>{
+    try {
+        const productId = req.params.id
+        await product.deleteOne({_id: productId})
+        res.json({
+            status: 'success',
+            message: 'Product deleted  successfully'
+        })
+        
+    } catch (error) {
+        console.log(error);
+    }
+
+})
+
+//find single product by id
+app.get ('/api/product/:id',async(req,res)=>{
+    try {
+        const productId = req.params.id
+        const prod = await product.findById(productId)
+        res.json({
+            status: 'success',
+            message: 'Product feched  successfully',
+            prod
+        })
+        
+    } catch (error) {
+        console.log(error);
+    }
+
+})
+
+
+//find all products
+app.get ('/api/product',async(req,res)=>{
+    try {
+        const products = await product.find()
+        res.json({
+            status: 'success',
+            message: 'all Product fected  successfully',
+            products
+        })
+        
+    } catch (error) {
+        console.log(error);
+    }
+
 })
 
 const port = 3000
